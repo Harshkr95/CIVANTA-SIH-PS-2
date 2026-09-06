@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.roads import router as roads_router
 from app.risk import router as risk_router
+from app.auth import router as auth_router
+
 
 app = FastAPI()
 
@@ -24,3 +26,4 @@ def home():
 
 app.include_router(roads_router)
 app.include_router(risk_router)
+app.include_router(auth_router)

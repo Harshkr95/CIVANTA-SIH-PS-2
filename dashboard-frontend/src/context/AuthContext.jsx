@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { mockUsers } from "../data/mockData";
+import { authService } from "../services/authService";
 
 const AuthContext = createContext(null);
 
@@ -9,47 +9,64 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const stored = localStorage.getItem("civanta_user");
+
     if (stored) {
       try {
         setUser(JSON.parse(stored));
-      } catch {}
+      } catch {
+        localStorage.removeItem("civanta_user");
+      }
     }
+
     setLoading(false);
   }, []);
 
   const login = async ({ email, password }) => {
-    // Mock auth — replace with API call
-    await new Promise((r) => setTimeout(r, 600));
-    const found = mockUsers.find((u) => u.email === email);
-    const u = found || mockUsers[0];
-    if (password.length < 4) throw new Error("Invalid credentials");
+    const response = await authService.login({
+      email,
+      password,
+    });
+
+    const u = response.data;
+
     setUser(u);
     localStorage.setItem("civanta_user", JSON.stringify(u));
+
     return u;
   };
 
   const register = async (data) => {
-    await new Promise((r) => setTimeout(r, 600));
-    const u = {
-      id: "U-" + Date.now(),
+    const response = await authService.register({
       name: data.name,
       email: data.email,
-      role: "user",
+      password: data.password,
       language: data.language || "en",
-      createdAt: new Date().toISOString(),
-    };
+    });
+
+    const u = response.data;
+
     setUser(u);
     localStorage.setItem("civanta_user", JSON.stringify(u));
+
     return u;
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem("civanta_user");
+    localStorage.removeItem("civanta_token");
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        login,
+        register,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

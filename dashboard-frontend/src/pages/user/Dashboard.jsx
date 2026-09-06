@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext"; 
 import {
   FilePlus2,
   ListChecks,
@@ -63,12 +64,14 @@ const kpis = [
 ];
 
 export default function UserDashboard() {
+  const { user } = useAuth();
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Welcome back, Aarav 👋
+            Welcome back, {user?.name || "User"} 👋
+
           </h1>
           <p className="text-sm text-slate-500">
             Here's what's happening with your submissions today.

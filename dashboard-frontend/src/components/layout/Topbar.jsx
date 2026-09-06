@@ -1,8 +1,10 @@
 import { Menu, Search, Bell } from "lucide-react";
 import Logo from "../ui/Logo";
+import { useAuth } from "../../context/AuthContext";
 import LanguageSelector from "../navbar/LanguageSelector";
 
 export default function Topbar({ onMenu, admin }) {
+  const { user } = useAuth();
   return (
     <header className="h-16 bg-white border-b border-slate-200 flex items-center gap-3 px-4 md:px-6 sticky top-0 z-30">
       <button
@@ -33,10 +35,12 @@ export default function Topbar({ onMenu, admin }) {
         </div>
         <div className="hidden sm:block">
           <div className="text-sm font-semibold text-slate-900 leading-tight">
-            {admin ? "Admin" : "Aarav Sharma"}
+            {admin ? "Admin" : user?.name || "User"}
+
           </div>
           <div className="text-xs text-slate-500 leading-tight">
-            {admin ? "admin@civanta.in" : "user@civanta.in"}
+            {admin ? "admin@civanta.in" : user?.email || ""}
+
           </div>
         </div>
       </div>

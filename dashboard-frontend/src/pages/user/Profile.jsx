@@ -3,16 +3,19 @@ import Card from "../../components/ui/Card";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import { useToast } from "../../context/ToastContext";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Profile() {
   const { push } = useToast();
+  const { user } = useAuth();
   const { register, handleSubmit } = useForm({
     defaultValues: {
-      name: "Aarav Sharma",
-      email: "user@civanta.in",
-      phone: "+91 98xxxxxx00",
-      city: "Bengaluru",
+      name: user?.name || "",
+      email: user?.email || "",
+      phone: "",
+      city: "",
     },
+
   });
   return (
     <div className="space-y-6 max-w-3xl">
@@ -21,12 +24,29 @@ export default function Profile() {
       </h1>
       <Card className="p-6 flex items-center gap-4">
         <div className="h-16 w-16 rounded-full bg-linear-to-br from-brand-500 to-indigo-600 text-white flex items-center justify-center font-bold text-xl">
-          AS
+          {user?.name
+             ? user.name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase()
+             : "U"}
+
         </div>
         <div>
-          <div className="font-bold text-slate-900">Aarav Sharma</div>
+          <div className="font-bold text-slate-900">
+            {user?.name || "User"}
+          </div>
+
           <div className="text-sm text-slate-500">
-            Citizen · Member since Aug 2026
+            Citizen · Member since {user?.createdAt
+               ? new Date(user.createdAt).toLocaleDateString("en-IN", {
+                   month: "short",
+                   year: "numeric",
+                 })
+               : "—"}
+
           </div>
         </div>
       </Card>
